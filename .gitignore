@@ -1,0 +1,8 @@
+.idea/*
+!.idea/codeStyles
+!.idea/copyright
+!.idea/inspectionProfiles
+!.idea/scopes
+
+!.idea/gradle.xml
+!.idea/icon.svg
