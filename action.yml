@@ -74,9 +74,9 @@ runs:
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
       run: |
-        echo "major=$("$GITHUB_ACTION_PATH"/scripts/parse-version-part.sh major "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
-        echo "minor=$("$GITHUB_ACTION_PATH"/scripts/parse-version-part.sh minor "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
-        echo "patch=$("$GITHUB_ACTION_PATH"/scripts/parse-version-part.sh patch "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+        echo "major=$("$GITHUB_ACTION_PATH"/scripts/get-version-part.sh major "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+        echo "minor=$("$GITHUB_ACTION_PATH"/scripts/get-version-part.sh minor "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+        echo "patch=$("$GITHUB_ACTION_PATH"/scripts/get-version-part.sh patch "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
 
       env:
         NEXT_VERSION: ${{ steps.get-next-version.outputs.version }}
