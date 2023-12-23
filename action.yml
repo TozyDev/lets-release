@@ -87,4 +87,6 @@ runs:
       shell: bash
       run: |
         NOTES=$("$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh)
-        echo "notes=$NOTES" >> $GITHUB_OUTPUT
+        echo "notes<<$EOF" >> $GITHUB_OUTPUT
+        echo "$NOTES" >> $GITHUB_OUTPUT
+        echo "$EOF" >> $GITHUB_OUTPUT
