@@ -21,25 +21,25 @@ MAJOR_INDEX=-1
 MINOR_INDEX=-1
 PATCH_INDEX=-1
 
-IFS='.' read -ra VERSION_PARTS <<< "$VERSION_FORMAT"
+IFS='.|_|-' read -ra VERSION_PARTS <<< "$VERSION_FORMAT"
 for i in "${!VERSION_PARTS[@]}"; do
     case "${VERSION_PARTS[$i]}" in
-        "major") MAJOR_INDEX=$i ;;
-        "minor") MINOR_INDEX=$i ;;
-        "patch"|"micro") PATCH_INDEX=$i ;;
+        "major") MAJOR_INDEX=$((i + 1)) ;;
+        "minor") MINOR_INDEX=$((i + 1)) ;;
+        "patch"|"micro") PATCH_INDEX=$((i + 1)) ;;
     esac
 done
 
 if [ "$MAJOR_INDEX" -ne -1 ]; then
-    MAJOR=$(echo "$LATEST_VERSION" | cut -d '.' -f $(("$MAJOR_INDEX" + 1)))
+    MAJOR=$(echo "$LATEST_VERSION" | awk -F '[.|_|-]' '{print $'"$MAJOR_INDEX"'}')
 fi
 
 if [ "$MINOR_INDEX" -ne -1 ]; then
-    MINOR=$(echo "$LATEST_VERSION" | cut -d '.' -f $(("$MINOR_INDEX" + 1)))
+    MINOR=$(echo "$LATEST_VERSION" | awk -F '[.|_|-]' '{print $'"$MINOR_INDEX"'}')
 fi
 
 if [ "$PATCH_INDEX" -ne -1 ]; then
-    PATCH=$(echo "$LATEST_VERSION" | cut -d '.' -f $(("$PATCH_INDEX" + 1)))
+    PATCH=$(echo "$LATEST_VERSION" | awk -F '[.|_|-]' '{print $'"$PATCH_INDEX"'}')
 fi
 
 case "$RELEASE_TYPE" in
