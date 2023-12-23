@@ -22,8 +22,11 @@ jobs:
 
   release:
     needs: check
-    runs-on: ubuntu-latest
     if: ${{ needs.check.outputs.release-type != 'none' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
