@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Write release notes file
-        run: echo "${{ needs.check.outputs.release-notes-md }}" > release-notes.md
+        run: echo -n "${{ needs.check.outputs.release-notes-md }}" > release-notes.md
 
       - name: Create release
         run: gh release create v${{ needs.check.outputs.next-version }} --title ${{ needs.check.outputs.next-version }} --notes-file _ << release-notes.md

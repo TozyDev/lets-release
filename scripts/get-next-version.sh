@@ -34,11 +34,14 @@ if [ -z "$VERSION_FORMAT" ]; then
   VERSION_FORMAT="major.minor.patch"
 fi
 
+NEXT_VERSION=VERSION_FORMAT
+
 LATEST_VERSION=$(git describe --abbrev=0 --tags 2>/dev/null || echo "")
 LATEST_VERSION=${LATEST_VERSION#"v"}
 if [ -z "$LATEST_VERSION" ]; then
   LATEST_VERSION=VERSION_FORMAT
   LATEST_VERSION=$(replace_sem_ver_placeholders "$LATEST_VERSION" 1 0 0)
+  NEXT_VERSION=LATEST_VERSION
   RELEASE_TYPE="none"
 fi
 
@@ -82,7 +85,6 @@ case "$RELEASE_TYPE" in
     ;;
 esac
 
-NEXT_VERSION="$VERSION_FORMAT"
 NEXT_VERSION=$(replace_sem_ver_placeholders "$NEXT_VERSION" "$MAJOR" "$MINOR" "$PATCH")
 NEXT_VERSION=$(replace_cal_ver_placeholders "$NEXT_VERSION")
 
