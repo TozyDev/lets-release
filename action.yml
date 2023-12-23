@@ -47,9 +47,9 @@ outputs:
     description: The patch part of the next version to release
     value: ${{ steps.parse-version-parts.outputs.patch }}
 
-  release-notes:
-    description: The release notes, written in Markdown
-    value: ${{ steps.generate-release-notes.outputs.notes }}
+  release-notes-md:
+    description: The release notes file in markdown format
+    value: release-notes.md
 
 runs:
   using: composite
@@ -85,4 +85,4 @@ runs:
     - id: generate-release-notes
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
-      run: echo "notes=$("$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh)" >> $GITHUB_OUTPUT
+      run: $GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh release-notes.md
