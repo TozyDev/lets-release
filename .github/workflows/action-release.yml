@@ -30,6 +30,8 @@ jobs:
 
       - name: Create release
         run: gh release create v${{ needs.check.outputs.next-version }} --title ${{ needs.check.outputs.next-version }} --notes-file ${{ needs.check.outputs.release-notes-md }}
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Tag major tag
         run: |
