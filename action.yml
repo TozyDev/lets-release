@@ -49,7 +49,7 @@ outputs:
 
   release-notes-md:
     description: The release notes file in markdown format
-    value: release-notes.md
+    value: ${{ steps.generate-release-notes.outputs.notes }}
 
 runs:
   using: composite
@@ -85,4 +85,6 @@ runs:
     - id: generate-release-notes
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
-      run: $GITHUB_ACTION_PATH/scripts/generate-release-notes.sh release-notes.md
+      run: |
+        NOTES=$("$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh)
+        echo "notes=$NOTES" >> $GITHUB_OUTPUT
