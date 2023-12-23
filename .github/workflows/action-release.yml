@@ -1,0 +1,37 @@
+name: GitHub Actions Release
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  check:
+    outputs:
+      release-type: ${{ steps.lets-release.outputs.release-type }}
+      next-version: ${{ steps.lets-release.outputs.next-version }}
+      release-notes: ${{ steps.lets-release.outputs.release-notes }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Let's release
+        id: lets-release
+        uses: TozyDev/lets-release@main
+
+  release:
+    needs: check
+    runs-on: ubuntu-latest
+    if: ${{ needs.check.outputs.release-type != 'none' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create release
+        run: gh release create v${{ needs.check.outputs.next-version }} --title ${{ needs.check.outputs.next-version }} --notes ${{ needs.check.outputs.release-notes }}
+
+      - name: Tag major tag
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag -d v${{ needs.check.outputs.next-version }} -m "v${{ needs.check.outputs.next-version }}"

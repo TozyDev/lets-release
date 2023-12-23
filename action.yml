@@ -5,6 +5,27 @@ branding:
   color: green
   icon: tag
 
+inputs:
+  version-format:
+    description: |
+      The format of the version to release.
+      There are available placeholders:
+        - major
+        - minor
+        - patch
+        - YYYY
+        - YY
+        - 0Y
+        - MM
+        - 0M
+        - WW
+        - 0W
+        - DD
+        - 0D
+
+    required: false
+    default: major.minor.patch
+
 outputs:
   release-type:
     description: The type of release (none, patch, minor, major)
@@ -27,14 +48,17 @@ runs:
 
     - id: get-release-type
       shell: bash
-      run: echo "type=$(${{ github.action_path }}/scripts/get-release-type.sh)" >> $GITHUB_OUTPUT
+      run: echo "type=$("$GITHUB_ACTION_PATH"/scripts/get-release-type.sh)" >> $GITHUB_OUTPUT
 
     - id: get-next-version
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
-      run: echo "version=$(${{ github.action_path }}/scripts/get-next-version.sh ${{ steps.get-release-type.outputs.type }})" >> $GITHUB_OUTPUT
+      run: echo "version=$("$GITHUB_ACTION_PATH"/scripts/get-next-version.sh "$RELEASE_TYPE" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+      env:
+        RELEASE_TYPE: ${{ steps.get-release-type.outputs.type }}
+        VERSION_FORMAT: ${{ inputs.version-format }}
 
     - id: generate-release-notes
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
-      run: echo "notes=$(${{ github.action_path }}/scripts/generate-release-notes.sh)" >> $GITHUB_OUTPUT
+      run: echo "notes=$("$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh)" >> $GITHUB_OUTPUT
