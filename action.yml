@@ -32,7 +32,7 @@ runs:
     - id: get-next-version
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
-      run: echo "version=$(${{ github.action_path }}/scripts/get-next-version.sh)" >> $GITHUB_OUTPUT
+      run: echo "version=$(${{ github.action_path }}/scripts/get-next-version.sh ${{ steps.get-release-type.outputs.type }})" >> $GITHUB_OUTPUT
 
     - id: generate-release-notes
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
