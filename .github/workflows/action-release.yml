@@ -8,6 +8,7 @@ jobs:
     outputs:
       release-type: ${{ steps.lets-release.outputs.release-type }}
       next-version: ${{ steps.lets-release.outputs.next-version }}
+      major: ${{ steps.lets-release.outputs.major }}
       release-notes: ${{ steps.lets-release.outputs.release-notes }}
 
     runs-on: ubuntu-latest
@@ -34,4 +35,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git tag -d v${{ needs.check.outputs.next-version }} -m "v${{ needs.check.outputs.next-version }}"
+          git tag -d v${{ needs.check.outputs.major }}
+          git push origin :v${{ needs.check.outputs.major }}
+          git tag -a v${{ needs.check.outputs.major }} -m "Release v${{ needs.check.outputs.major }}"
+          git push origin v${{ needs.check.outputs.major }}
