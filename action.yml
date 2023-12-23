@@ -85,4 +85,4 @@ runs:
     - id: generate-release-notes
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
-      run: "$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh release-notes.md
+      run: $GITHUB_ACTION_PATH/scripts/generate-release-notes.sh release-notes.md
