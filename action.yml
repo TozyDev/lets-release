@@ -35,6 +35,18 @@ outputs:
     description: The next version to release
     value: ${{ steps.get-next-version.outputs.version }}
 
+  major:
+    description: The major part of the next version to release
+    value: ${{ steps.parse-version-parts.outputs.major }}
+
+  minor:
+    description: The minor part of the next version to release
+    value: ${{ steps.parse-version-parts.outputs.minor }}
+
+  patch:
+    description: The patch part of the next version to release
+    value: ${{ steps.parse-version-parts.outputs.patch }}
+
   release-notes:
     description: The release notes, written in Markdown
     value: ${{ steps.generate-release-notes.outputs.notes }}
@@ -56,6 +68,18 @@ runs:
       run: echo "version=$("$GITHUB_ACTION_PATH"/scripts/get-next-version.sh "$RELEASE_TYPE" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
       env:
         RELEASE_TYPE: ${{ steps.get-release-type.outputs.type }}
+        VERSION_FORMAT: ${{ inputs.version-format }}
+
+    - id: parse-version-parts
+      if: ${{ steps.get-release-type.outputs.type != 'none' }}
+      shell: bash
+      run: |
+        echo "major=$("$GITHUB_ACTION_PATH"/scripts/parse-version-parts.sh major "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+        echo "minor=$("$GITHUB_ACTION_PATH"/scripts/parse-version-parts.sh minor "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+        echo "patch=$("$GITHUB_ACTION_PATH"/scripts/parse-version-parts.sh patch "$NEXT_VERSION" "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+
+      env:
+        NEXT_VERSION: ${{ steps.get-next-version.outputs.version }}
         VERSION_FORMAT: ${{ inputs.version-format }}
 
     - id: generate-release-notes
