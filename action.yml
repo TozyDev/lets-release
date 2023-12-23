@@ -1,0 +1,40 @@
+name: Let's Release
+description: 🚀 Let's release as soon as possible
+author: TozyDev
+branding:
+  color: green
+  icon: tag
+
+outputs:
+  release-type:
+    description: The type of release (none, patch, minor, major)
+    value: ${{ steps.get-release-type.outputs.type }}
+
+  next-version:
+    description: The next version to release
+    value: ${{ steps.get-next-version.outputs.version }}
+
+  release-notes:
+    description: The release notes, written in Markdown
+    value: ${{ steps.generate-release-notes.outputs.notes }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - id: get-release-type
+      shell: bash
+      run: echo "type=$(${{ github.action_path }}/scripts/get-release-type.sh)" >> $GITHUB_OUTPUT
+
+    - id: get-next-version
+      if: ${{ steps.get-release-type.outputs.type != 'none' }}
+      shell: bash
+      run: echo "version=$(${{ github.action_path }}/scripts/get-next-version.sh)" >> $GITHUB_OUTPUT
+
+    - id: generate-release-notes
+      if: ${{ steps.get-release-type.outputs.type != 'none' }}
+      shell: bash
+      run: echo "notes=$(${{ github.action_path }}/scripts/generate-release-notes.sh)" >> $GITHUB_OUTPUT
