@@ -9,7 +9,7 @@ jobs:
       release-type: ${{ steps.lets-release.outputs.release-type }}
       next-version: ${{ steps.lets-release.outputs.next-version }}
       major: ${{ steps.lets-release.outputs.major }}
-      release-notes: ${{ steps.lets-release.outputs.release-notes }}
+      release-notes-md: ${{ steps.lets-release.outputs.release-notes-md }}
 
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create release
-        run: gh release create v${{ needs.check.outputs.next-version }} --title ${{ needs.check.outputs.next-version }} --notes-file ${{ needs.check.outputs.release-notes }}
+        run: gh release create v${{ needs.check.outputs.next-version }} --title ${{ needs.check.outputs.next-version }} --notes-file ${{ needs.check.outputs.release-notes-md }}
 
       - name: Tag major tag
         run: |
