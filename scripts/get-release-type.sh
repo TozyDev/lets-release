@@ -3,7 +3,7 @@
 set -e
 
 LAST_TAG=$(git describe --abbrev=0 --tags 2>/dev/null || echo "")
-COMMIT_HISTORY_MESSAGES=$(git log --format="%s (%h)" "${LAST_TAG:+..}HEAD" 2>/dev/null)
+COMMIT_HISTORY_MESSAGES=$(git log --format="%s (%h)" "$LAST_TAG${LAST_TAG:+..}HEAD" 2>/dev/null)
 
 RELEASE_TYPE=0
 
