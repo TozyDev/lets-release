@@ -32,31 +32,33 @@ fi
 LAST_TAG=$(git describe --abbrev=0 --tags --match="v$(glob_version_format $VERSION_FORMAT)" 2>/dev/null || echo "")
 COMMIT_HISTORY_MESSAGES=$(git log --format="%s (%h)" "$LAST_TAG${LAST_TAG:+..}HEAD" 2>/dev/null)
 
-RELEASE_TYPE=0
-
 IFS=$'\n'
 for RAW in ${COMMIT_HISTORY_MESSAGES}; do
   COMMIT_TYPE=$(echo "${RAW}" | cut -d':' -f1 | xargs)
   IS_BREAKING_CHANGE=$([[ "${COMMIT_TYPE}" == "!"* ]] && echo true || echo false)
 
   if [[ "${IS_BREAKING_CHANGE}" == true ]]; then
-    RELEASE_TYPE=1
     break
   fi
 
   COMMIT_TYPE=$(echo "${COMMIT_TYPE}" | cut -d'(' -f1 | xargs)
   if [[ "${COMMIT_TYPE}" == "feat" ]]; then
-    RELEASE_TYPE=2
+    IS_MINOR_CHANGE=true
   fi
 
   if [[ "${COMMIT_TYPE}" == "fix" ]]; then
-    RELEASE_TYPE=3
+    IS_PATCH_CHANGE=true
   fi
 done
 
-case $RELEASE_TYPE in
-  0) echo "none" ;;
-  1) echo "major" ;;
-  2) echo "minor" ;;
-  3) echo "patch" ;;
-esac
+if [[ "${IS_BREAKING_CHANGE}" == true ]]; then
+  RELEASE_TYPE="major"
+elif [[ "${IS_MINOR_CHANGE}" == true ]]; then
+  RELEASE_TYPE="minor"
+elif [[ "${IS_PATCH_CHANGE}" == true ]]; then
+  RELEASE_TYPE="patch"
+else
+  RELEASE_TYPE="none"
+fi
+
+echo "$RELEASE_TYPE"
