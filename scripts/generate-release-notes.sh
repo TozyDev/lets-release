@@ -36,8 +36,35 @@ declare -a EXCLUDE_COMMIT_MESSAGES=(
   "chore(*): release *"
 )
 
-LAST_TAG=$(git describe --abbrev=0 --tags 2>/dev/null || echo "")
-COMMIT_HISTORY_MESSAGES=$(git log --format="%s (%h)" "${LAST_TAG:+..}HEAD" 2>/dev/null)
+function glob_version_format() {
+  local VERSION_FORMAT=$1
+  VERSION_FORMAT=${VERSION_FORMAT/major/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/minor/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/patch/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/micro/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/YYYY/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/YY/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0Y/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/MM/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0M/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/WW/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0W/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/DD/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0D/[0-9]*}
+  echo "$VERSION_FORMAT"
+}
+
+VERSION_FORMAT=$1
+VERSION_FORMAT=${VERSION_FORMAT/MAJOR/major}
+VERSION_FORMAT=${VERSION_FORMAT/MINOR/minor}
+VERSION_FORMAT=${VERSION_FORMAT/PATCH/patch}
+VERSION_FORMAT=${VERSION_FORMAT/MICRO/micro}
+if [ -z "$VERSION_FORMAT" ]; then
+  VERSION_FORMAT="major.minor.patch"
+fi
+
+LAST_TAG=$(git describe --abbrev=0 --tags --match="v$(glob_version_format $VERSION_FORMAT)" 2>/dev/null || echo "")
+COMMIT_HISTORY_MESSAGES=$(git log --format="%s (%h)" "$LAST_TAG${LAST_TAG:+..}HEAD" 2>/dev/null)
 
 function process_history_message() {
   local RAW=$1

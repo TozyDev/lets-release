@@ -87,9 +87,12 @@ runs:
     - id: generate-release-notes
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
       shell: bash
+      env:
+        VERSION_FORMAT: ${{ inputs.version-format }}
+
       run: |
         {
           echo "notes<<EOF"
-          echo "$("$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh)"
+          echo "$("$GITHUB_ACTION_PATH"/scripts/generate-release-notes.sh "$VERSION_FORMAT")"
           echo "EOF"
         } >> $GITHUB_OUTPUT
