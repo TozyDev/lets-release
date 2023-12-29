@@ -34,7 +34,7 @@ if [ -z "$VERSION_FORMAT" ]; then
   VERSION_FORMAT="major.minor.patch"
 fi
 
-NEXT_VERSION=VERSION_FORMAT
+NEXT_VERSION=$VERSION_FORMAT
 
 LATEST_VERSION=$(git describe --abbrev=0 --tags 2>/dev/null || echo "")
 LATEST_VERSION=${LATEST_VERSION#"v"}
