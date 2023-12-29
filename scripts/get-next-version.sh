@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+set -e
+
+function glob_version_format() {
+  local VERSION_FORMAT=$1
+  VERSION_FORMAT=${VERSION_FORMAT/major/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/minor/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/patch/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/micro/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/YYYY/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/YY/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0Y/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/MM/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0M/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/WW/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0W/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/DD/[0-9]*}
+  VERSION_FORMAT=${VERSION_FORMAT/0D/[0-9]*}
+  echo "$VERSION_FORMAT"
+}
+
 function replace_sem_ver_placeholders() {
   local VERSION=$1
   VERSION=${VERSION/major/$2}
@@ -36,7 +56,7 @@ fi
 
 NEXT_VERSION=$VERSION_FORMAT
 
-LATEST_VERSION=$(git describe --abbrev=0 --tags 2>/dev/null || echo "")
+LATEST_VERSION=$(git describe --abbrev=0 --tags --match="v$(glob_version_format $VERSION_FORMAT)" 2>/dev/null || echo "")
 LATEST_VERSION=${LATEST_VERSION#"v"}
 
 if [ -z "$LATEST_VERSION" ]; then

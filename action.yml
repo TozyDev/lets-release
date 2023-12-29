@@ -60,7 +60,9 @@ runs:
 
     - id: get-release-type
       shell: bash
-      run: echo "type=$("$GITHUB_ACTION_PATH"/scripts/get-release-type.sh)" >> $GITHUB_OUTPUT
+      run: echo "type=$("$GITHUB_ACTION_PATH"/scripts/get-release-type.sh "$VERSION_FORMAT")" >> $GITHUB_OUTPUT
+      env:
+        VERSION_FORMAT: ${{ inputs.version-format }}
 
     - id: get-next-version
       if: ${{ steps.get-release-type.outputs.type != 'none' }}
