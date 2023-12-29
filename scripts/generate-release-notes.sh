@@ -55,6 +55,8 @@ function glob_version_format() {
 }
 
 VERSION_FORMAT=$1
+RELEASE_NOTES_FILE=$2
+
 VERSION_FORMAT=${VERSION_FORMAT/MAJOR/major}
 VERSION_FORMAT=${VERSION_FORMAT/MINOR/minor}
 VERSION_FORMAT=${VERSION_FORMAT/PATCH/patch}
@@ -118,7 +120,6 @@ for TYPE in "${!TYPE_HEADERS[@]}"; do
   fi
 done
 
-RELEASE_NOTES_FILE=$1
 if [[ -n "${RELEASE_NOTES_FILE}" ]]; then
   echo "${RELEASE_NOTES_BODY}" > "${RELEASE_NOTES_FILE}"
 else
